@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виртуальная лаборатория</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+        .panel {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px; border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
 
+<div class="panel">
+    <h3>Данные измерений</h3>
+    <p>📢 Шум: <span id="noiseLevel">0</span> дБ</p>
+    <p>💡 Освещенность: <span id="lightLevel">0</span> люкс</p>
+    <p>🔧 Вибрация: <span id="vibrationLevel">0</span> мм/с</p>
+</div>
+
+<script>
+    // Создаём 3D-сцену
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Источник света
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(2, 5, 5);
+    scene.add(light);
+
+    // Рабочее место (куб)
+    const geometry = new THREE.BoxGeometry(2, 1, 2);
+    const material = new THREE.MeshStandardMaterial({ color: 0x0077ff });
+    const workstation = new THREE.Mesh(geometry, material);
+    scene.add(workstation);
+
+    camera.position.z = 5;
+
+    // Имитация данных измерений
+    function updateMeasurements() {
+        document.getElementById("noiseLevel").innerText = (Math.random() * 30 + 50).toFixed(1);
+        document.getElementById("lightLevel").innerText = (Math.random() * 500 + 100).toFixed(1);
+        document.getElementById("vibrationLevel").innerText = (Math.random() * 2).toFixed(2);
+    }
+    setInterval(updateMeasurements, 2000);
+
+    function animate() {
+        requestAnimationFrame(animate);
+        workstation.rotation.y += 0.01; // Вращаем объект
+        renderer.render(scene, camera);
+    }
+    animate();
+</script>
+
+</body>
+</html>
