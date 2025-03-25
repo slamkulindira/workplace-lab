@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Виртуальная лаборатория</title>
+    <title>Виртуальная лаборатория: Завод</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
     <style>
         body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
         .panel {
@@ -36,13 +37,17 @@
     light.position.set(2, 5, 5);
     scene.add(light);
 
-    // Рабочее место (куб)
-    const geometry = new THREE.BoxGeometry(2, 1, 2);
-    const material = new THREE.MeshStandardMaterial({ color: 0x0077ff });
-    const workstation = new THREE.Mesh(geometry, material);
-    scene.add(workstation);
+    // Загрузка 3D-модели завода
+    const loader = new THREE.GLTFLoader();
+    loader.load('models/factory.glb', function (gltf) {
+        const factory = gltf.scene;
+        factory.scale.set(2, 2, 2);
+        factory.position.set(0, -1, 0);
+        scene.add(factory);
+    });
 
-    camera.position.z = 5;
+    // Камера
+    camera.position.set(0, 2, 5);
 
     // Имитация данных измерений
     function updateMeasurements() {
@@ -54,7 +59,6 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        workstation.rotation.y += 0.01; // Вращаем объект
         renderer.render(scene, camera);
     }
     animate();
